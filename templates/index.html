@@ -1,0 +1,657 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI-Powered Career Guidance System | Intelligent Career Counseling & ATS Scanner</title>
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { sans: ['Inter', 'sans-serif'] },
+          colors: {
+            brand: {
+              50: '#eef2ff',
+              100: '#e0e7ff',
+              500: '#6366f1',
+              600: '#4f46e5',
+              700: '#4338ca',
+              800: '#3730a3',
+              900: '#312e81'
+            }
+          }
+        }
+      }
+    }
+  </script>
+  
+  <!-- FontAwesome 6 CDN -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  
+  <!-- Chart.js CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body class="bg-slate-50 text-slate-800 antialiased min-h-screen flex flex-col">
+
+  <!-- TOP HEADER / NAV -->
+  <header class="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-slate-200">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between h-16">
+        
+        <!-- Logo -->
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-brand-600 to-indigo-500 flex items-center justify-center text-white shadow-md shadow-brand-500/20">
+            <i class="fa-solid fa-compass text-lg"></i>
+          </div>
+          <div>
+            <span class="text-lg font-bold bg-gradient-to-r from-brand-700 to-indigo-600 bg-clip-text text-transparent">CareerPulse AI</span>
+            <span class="hidden md:inline-block text-xs font-medium text-slate-400 ml-2 px-2 py-0.5 bg-slate-100 rounded-full border border-slate-200">AI Career Guidance System</span>
+          </div>
+        </div>
+
+        <!-- Quick Profile Loader -->
+        <div class="flex items-center gap-2">
+          <label class="text-xs font-medium text-slate-500 hidden lg:inline">Sample Profiles:</label>
+          <select id="sampleProfileSelect" class="text-xs bg-slate-100 border border-slate-200 text-slate-700 rounded-lg px-2.5 py-1.5 focus:outline-none focus:ring-2 focus:ring-brand-500">
+            <option value="">⚡ Load Sample Profile...</option>
+            <option value="ai_student">AI & Data Science Student</option>
+            <option value="web_dev_student">Full-Stack Web Enthusiast</option>
+            <option value="cyber_student">Cybersecurity & Networks</option>
+            <option value="undecided_student">Undecided Tech Freshman</option>
+          </select>
+        </div>
+
+      </div>
+
+      <!-- Navigation Tabs -->
+      <nav class="flex space-x-1 sm:space-x-3 overflow-x-auto py-2 no-scrollbar border-t border-slate-100 text-sm font-medium text-slate-600">
+        <button onclick="switchTab('recommender')" id="tab-btn-recommender" class="tab-button active flex items-center gap-2 px-3 py-1.5 rounded-lg text-brand-600 bg-brand-50 font-semibold transition">
+          <i class="fa-solid fa-bullseye"></i> <span>Recommender</span>
+        </button>
+        <button onclick="switchTab('skill-gap')" id="tab-btn-skill-gap" class="tab-button flex items-center gap-2 px-3 py-1.5 rounded-lg hover:bg-slate-100 transition">
+          <i class="fa-solid fa-chart-pie"></i> <span>Skill Gap</span>
+        </button>
+        <button onclick="switchTab('resume')" id="tab-btn-resume" class="tab-button flex items-center gap-2 px-3 py-1.5 rounded-lg hover:bg-slate-100 transition">
+          <i class="fa-solid fa-file-invoice"></i> <span>Resume Evaluator</span>
+        </button>
+        <button onclick="switchTab('assessment')" id="tab-btn-assessment" class="tab-button flex items-center gap-2 px-3 py-1.5 rounded-lg hover:bg-slate-100 transition">
+          <i class="fa-solid fa-brain"></i> <span>RIASEC Quiz</span>
+        </button>
+        <button onclick="switchTab('explorer')" id="tab-btn-explorer" class="tab-button flex items-center gap-2 px-3 py-1.5 rounded-lg hover:bg-slate-100 transition">
+          <i class="fa-solid fa-magnifying-glass-chart"></i> <span>Career Explorer</span>
+        </button>
+        <button onclick="switchTab('market')" id="tab-btn-market" class="tab-button flex items-center gap-2 px-3 py-1.5 rounded-lg hover:bg-slate-100 transition">
+          <i class="fa-solid fa-arrow-trend-up"></i> <span>Market Insights</span>
+        </button>
+        <button onclick="switchTab('advisor')" id="tab-btn-advisor" class="tab-button flex items-center gap-2 px-3 py-1.5 rounded-lg hover:bg-slate-100 transition">
+          <i class="fa-solid fa-robot"></i> <span>AI Advisor</span>
+        </button>
+      </nav>
+
+    </div>
+  </header>
+
+  <!-- MAIN APP CONTAINER -->
+  <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
+
+    <!-- ========================================== -->
+    <!-- TAB 1: CAREER RECOMMENDER -->
+    <!-- ========================================== -->
+    <section id="tab-recommender" class="tab-pane active">
+      <div class="mb-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div>
+          <h1 class="text-2xl font-bold text-slate-900">Personalized Career Recommendations</h1>
+          <p class="text-sm text-slate-500">Matches your skills, interests, and academics using Machine Learning, NLP, and weighted scoring.</p>
+        </div>
+        <div class="flex items-center gap-2 text-xs text-slate-500">
+          <span class="inline-flex items-center gap-1 bg-emerald-50 text-emerald-700 px-2.5 py-1 rounded-full border border-emerald-200 font-medium">
+            <i class="fa-solid fa-circle text-[8px] text-emerald-500"></i> TF-IDF & Cosine Similarity
+          </span>
+          <span class="inline-flex items-center gap-1 bg-indigo-50 text-indigo-700 px-2.5 py-1 rounded-full border border-indigo-200 font-medium">
+            <i class="fa-solid fa-circle text-[8px] text-indigo-500"></i> ML Category Classifier
+          </span>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        
+        <!-- Left Column: Student Profile Input Form -->
+        <div class="lg:col-span-5 bg-white rounded-2xl border border-slate-200 p-6 shadow-sm">
+          <div class="flex items-center justify-between pb-4 border-b border-slate-100 mb-5">
+            <h2 class="text-base font-semibold text-slate-800 flex items-center gap-2">
+              <i class="fa-solid fa-user-graduate text-brand-600"></i> Student Profile
+            </h2>
+            <button type="button" onclick="resetForm()" class="text-xs text-slate-400 hover:text-slate-600">
+              <i class="fa-solid fa-rotate-left mr-1"></i> Clear
+            </button>
+          </div>
+
+          <form id="profileForm" onsubmit="handleRecommendationSubmit(event)">
+            
+            <!-- Skills Input -->
+            <div class="mb-4">
+              <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1.5">
+                Technical & Core Skills <span class="text-red-500">*</span>
+              </label>
+              <div class="border border-slate-200 rounded-xl p-2 bg-slate-50 focus-within:ring-2 focus-within:ring-brand-500 focus-within:bg-white transition">
+                <div id="skillsContainer" class="flex flex-wrap gap-1.5 mb-1.5"></div>
+                <input type="text" id="skillInput" placeholder="Type a skill and press Enter..." class="w-full text-sm bg-transparent border-none outline-none text-slate-700 placeholder-slate-400 px-1 py-1">
+              </div>
+              <!-- Quick Add Badges -->
+              <div class="mt-2 flex flex-wrap gap-1 text-[11px] text-slate-500">
+                <span class="text-slate-400 self-center">Popular:</span>
+                <button type="button" onclick="addSkill('Python')" class="skill-pill bg-slate-100 hover:bg-brand-50 hover:text-brand-600 px-2 py-0.5 rounded-md border border-slate-200">+ Python</button>
+                <button type="button" onclick="addSkill('JavaScript')" class="skill-pill bg-slate-100 hover:bg-brand-50 hover:text-brand-600 px-2 py-0.5 rounded-md border border-slate-200">+ JavaScript</button>
+                <button type="button" onclick="addSkill('Machine Learning')" class="skill-pill bg-slate-100 hover:bg-brand-50 hover:text-brand-600 px-2 py-0.5 rounded-md border border-slate-200">+ Machine Learning</button>
+                <button type="button" onclick="addSkill('React')" class="skill-pill bg-slate-100 hover:bg-brand-50 hover:text-brand-600 px-2 py-0.5 rounded-md border border-slate-200">+ React</button>
+                <button type="button" onclick="addSkill('SQL')" class="skill-pill bg-slate-100 hover:bg-brand-50 hover:text-brand-600 px-2 py-0.5 rounded-md border border-slate-200">+ SQL</button>
+                <button type="button" onclick="addSkill('Docker')" class="skill-pill bg-slate-100 hover:bg-brand-50 hover:text-brand-600 px-2 py-0.5 rounded-md border border-slate-200">+ Docker</button>
+              </div>
+            </div>
+
+            <!-- Interests Input -->
+            <div class="mb-4">
+              <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1.5">
+                Areas of Interest
+              </label>
+              <div class="border border-slate-200 rounded-xl p-2 bg-slate-50 focus-within:ring-2 focus-within:ring-brand-500 focus-within:bg-white transition">
+                <div id="interestsContainer" class="flex flex-wrap gap-1.5 mb-1.5"></div>
+                <input type="text" id="interestInput" placeholder="Type interest and press Enter (e.g. AI, Web, Security)..." class="w-full text-sm bg-transparent border-none outline-none text-slate-700 placeholder-slate-400 px-1 py-1">
+              </div>
+              <div class="mt-2 flex flex-wrap gap-1 text-[11px] text-slate-500">
+                <span class="text-slate-400 self-center">Popular:</span>
+                <button type="button" onclick="addInterest('Artificial Intelligence')" class="skill-pill bg-slate-100 hover:bg-brand-50 hover:text-brand-600 px-2 py-0.5 rounded-md border border-slate-200">+ Artificial Intelligence</button>
+                <button type="button" onclick="addInterest('Web Development')" class="skill-pill bg-slate-100 hover:bg-brand-50 hover:text-brand-600 px-2 py-0.5 rounded-md border border-slate-200">+ Web Development</button>
+                <button type="button" onclick="addInterest('Cyber Defense')" class="skill-pill bg-slate-100 hover:bg-brand-50 hover:text-brand-600 px-2 py-0.5 rounded-md border border-slate-200">+ Cyber Defense</button>
+                <button type="button" onclick="addInterest('Cloud Infrastructure')" class="skill-pill bg-slate-100 hover:bg-brand-50 hover:text-brand-600 px-2 py-0.5 rounded-md border border-slate-200">+ Cloud Infrastructure</button>
+              </div>
+            </div>
+
+            <!-- Education & Degree -->
+            <div class="grid grid-cols-2 gap-3 mb-4">
+              <div>
+                <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1.5">Degree Level</label>
+                <select id="degreeSelect" class="w-full text-sm bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-slate-700 focus:outline-none focus:ring-2 focus:ring-brand-500">
+                  <option value="Bachelor's">Bachelor's Degree (B.Tech / BS / BE)</option>
+                  <option value="Master's">Master's Degree (M.Tech / MS / MCA)</option>
+                  <option value="Associate's">Associate's / Diploma</option>
+                  <option value="Ph.D.">Ph.D. / Doctorate</option>
+                  <option value="Bootcamp">Bootcamp / Self-Taught</option>
+                </select>
+              </div>
+              <div>
+                <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1.5">CGPA / GPA (0 - 4 or 10)</label>
+                <input type="number" step="0.1" min="0" max="10" id="gpaInput" placeholder="e.g. 3.5 or 8.5" class="w-full text-sm bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-slate-700 focus:outline-none focus:ring-2 focus:ring-brand-500">
+              </div>
+            </div>
+
+            <!-- Major & Preferences -->
+            <div class="mb-4">
+              <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1.5">Major / Field of Study</label>
+              <input type="text" id="majorInput" placeholder="e.g. Computer Science, Information Technology, Data Science..." class="w-full text-sm bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-slate-700 focus:outline-none focus:ring-2 focus:ring-brand-500">
+            </div>
+
+            <div class="grid grid-cols-2 gap-3 mb-5">
+              <div>
+                <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1.5">Work Style</label>
+                <select id="workStyleSelect" class="w-full text-sm bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-slate-700 focus:outline-none focus:ring-2 focus:ring-brand-500">
+                  <option value="Any">Any / Flexible</option>
+                  <option value="Remote">Remote</option>
+                  <option value="Hybrid">Hybrid</option>
+                  <option value="On-site">On-site</option>
+                </select>
+              </div>
+              <div>
+                <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1.5">Target Domain</label>
+                <select id="targetIndustrySelect" class="w-full text-sm bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-slate-700 focus:outline-none focus:ring-2 focus:ring-brand-500">
+                  <option value="">All Domains</option>
+                  <option value="Artificial Intelligence & Data">AI & Data Science</option>
+                  <option value="Software Engineering & Web">Software & Web</option>
+                  <option value="Cybersecurity & Infrastructure">Cybersecurity</option>
+                  <option value="Cloud & Infrastructure">Cloud & DevOps</option>
+                  <option value="Design & Product">Design & Product</option>
+                  <option value="Emerging Technologies">Emerging Tech (Web3/IoT)</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Submit Button -->
+            <button type="submit" id="recommendBtn" class="w-full py-3 px-4 bg-gradient-to-r from-brand-600 to-indigo-600 hover:from-brand-700 hover:to-indigo-700 text-white rounded-xl font-semibold shadow-md shadow-brand-500/25 flex items-center justify-center gap-2 transition duration-200">
+              <i class="fa-solid fa-wand-magic-sparkles"></i> <span>Find My Career Matches</span>
+            </button>
+
+          </form>
+        </div>
+
+        <!-- Right Column: Recommendation Results -->
+        <div class="lg:col-span-7 flex flex-col">
+          
+          <!-- Empty State -->
+          <div id="recommenderEmptyState" class="bg-white rounded-2xl border border-slate-200 p-12 text-center my-auto flex flex-col items-center justify-center">
+            <div class="w-16 h-16 rounded-full bg-brand-50 text-brand-600 flex items-center justify-center text-2xl mb-4">
+              <i class="fa-solid fa-compass-drafting"></i>
+            </div>
+            <h3 class="text-lg font-bold text-slate-800 mb-1">Discover Your Ideal Career Pathway</h3>
+            <p class="text-sm text-slate-500 max-w-md mb-5">
+              Enter your technical skills, interests, and qualifications on the left, or choose a sample profile from the top dropdown to see recommendations.
+            </p>
+            <button type="button" onclick="loadSampleProfile('ai_student')" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-semibold transition">
+              ⚡ Try AI & Data Science Profile
+            </button>
+          </div>
+
+          <!-- Loading State -->
+          <div id="recommenderLoading" class="hidden bg-white rounded-2xl border border-slate-200 p-12 text-center my-auto">
+            <div class="inline-block animate-spin rounded-full h-10 w-10 border-4 border-brand-500 border-t-transparent mb-4"></div>
+            <p class="text-sm font-medium text-slate-600">Analyzing career corpus and calculating multi-factor match scores...</p>
+          </div>
+
+          <!-- Results Cards Container -->
+          <div id="recommendationsList" class="hidden space-y-4">
+            <!-- Dynamic cards injected via JavaScript -->
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ========================================== -->
+    <!-- TAB 2: SKILL GAP ANALYZER -->
+    <!-- ========================================== -->
+    <section id="tab-skill-gap" class="tab-pane">
+      <div class="mb-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div>
+          <h1 class="text-2xl font-bold text-slate-900">Skill Gap Analysis & Roadmap</h1>
+          <p class="text-sm text-slate-500">Benchmark your current skill repertoire against industry standards and unlock a personalized learning plan.</p>
+        </div>
+      </div>
+
+      <!-- Selector Bar -->
+      <div class="bg-white rounded-2xl border border-slate-200 p-5 shadow-sm mb-6">
+        <div class="grid grid-cols-1 md:grid-cols-12 gap-4 items-center">
+          <div class="md:col-span-5">
+            <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1.5">Select Target Career</label>
+            <select id="gapCareerSelect" onchange="runSkillGapAnalysis()" class="w-full text-sm bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 text-slate-800 font-medium focus:outline-none focus:ring-2 focus:ring-brand-500">
+              <!-- Populated by JS -->
+            </select>
+          </div>
+          <div class="md:col-span-5">
+            <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1.5">My Current Skills</label>
+            <div id="gapCurrentSkillsList" class="text-xs text-slate-600 flex flex-wrap gap-1 max-h-16 overflow-y-auto">
+              <span class="text-slate-400 italic">No skills entered yet. Fill the recommender form or click below.</span>
+            </div>
+          </div>
+          <div class="md:col-span-2">
+            <button onclick="runSkillGapAnalysis()" class="w-full py-2.5 px-4 bg-brand-600 hover:bg-brand-700 text-white rounded-xl text-sm font-semibold transition flex items-center justify-center gap-1.5 shadow-sm">
+              <i class="fa-solid fa-arrows-rotate"></i> <span>Analyze Gap</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Skill Gap Results Container -->
+      <div id="skillGapResults">
+        <div class="bg-white rounded-2xl border border-slate-200 p-12 text-center">
+          <i class="fa-solid fa-chart-column text-slate-300 text-4xl mb-3"></i>
+          <p class="text-sm text-slate-500">Select a career above and click 'Analyze Gap' to see your readiness score and personalized milestone roadmap.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================== -->
+    <!-- TAB 3: RESUME EVALUATOR & ATS SCANNER -->
+    <!-- ========================================== -->
+    <section id="tab-resume" class="tab-pane">
+      <div class="mb-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div>
+          <h1 class="text-2xl font-bold text-slate-900">AI-Powered Resume Evaluator & ATS Scanner</h1>
+          <p class="text-sm text-slate-500">Analyzes readability, keyword density, section architecture, action verbs, and role-specific match.</p>
+        </div>
+        <div class="flex items-center gap-2">
+          <button type="button" onclick="loadSampleResume('se')" class="px-3 py-1.5 text-xs bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg font-medium border border-slate-200 transition">
+            📄 Sample Software Dev Resume
+          </button>
+          <button type="button" onclick="loadSampleResume('ds')" class="px-3 py-1.5 text-xs bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg font-medium border border-slate-200 transition">
+            📄 Sample Data Scientist Resume
+          </button>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        
+        <!-- Left Column: Input Form (Text or Upload) -->
+        <div class="lg:col-span-5 bg-white rounded-2xl border border-slate-200 p-6 shadow-sm">
+          <form id="resumeForm" onsubmit="handleResumeSubmit(event)">
+            
+            <!-- Target Role Alignment (Optional) -->
+            <div class="mb-4">
+              <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1.5">
+                Target Role for ATS Keyword Matching (Optional)
+              </label>
+              <select id="resumeTargetCareer" class="w-full text-sm bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-slate-700 focus:outline-none focus:ring-2 focus:ring-brand-500">
+                <option value="">-- General ATS Evaluation (No Specific Role) --</option>
+                <!-- Filled dynamically -->
+              </select>
+            </div>
+
+            <!-- Upload Option -->
+            <div class="mb-4">
+              <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1.5">Upload File (PDF, DOCX, TXT)</label>
+              <div class="border-2 border-dashed border-slate-200 hover:border-brand-500 rounded-xl p-4 text-center cursor-pointer transition bg-slate-50 hover:bg-brand-50/20" onclick="document.getElementById('resumeFileInput').click()">
+                <i class="fa-solid fa-cloud-arrow-up text-2xl text-slate-400 mb-1"></i>
+                <p id="fileLabel" class="text-xs text-slate-600 font-medium">Click to upload your resume document</p>
+                <p class="text-[10px] text-slate-400">PDF, DOCX, or TXT up to 16MB</p>
+                <input type="file" id="resumeFileInput" accept=".pdf,.docx,.txt" class="hidden" onchange="handleFileSelect(event)">
+              </div>
+            </div>
+
+            <!-- Or Paste Text -->
+            <div class="mb-5">
+              <div class="flex items-center justify-between mb-1.5">
+                <label class="text-xs font-semibold uppercase tracking-wider text-slate-500">Or Paste Resume Text</label>
+                <button type="button" onclick="document.getElementById('resumeTextInput').value = ''" class="text-[11px] text-slate-400 hover:text-slate-600">Clear</button>
+              </div>
+              <textarea id="resumeTextInput" rows="9" placeholder="Paste your resume text here (Summary, Skills, Experience, Education, Projects)..." class="w-full text-xs font-mono bg-slate-50 border border-slate-200 rounded-xl p-3 text-slate-700 focus:outline-none focus:ring-2 focus:ring-brand-500 transition"></textarea>
+            </div>
+
+            <button type="submit" id="resumeEvaluateBtn" class="w-full py-3 bg-brand-600 hover:bg-brand-700 text-white rounded-xl font-semibold shadow-md shadow-brand-500/25 flex items-center justify-center gap-2 transition">
+              <i class="fa-solid fa-chart-simple"></i> <span>Scan & Evaluate Resume</span>
+            </button>
+          </form>
+        </div>
+
+        <!-- Right Column: ATS Evaluation Results -->
+        <div class="lg:col-span-7 flex flex-col">
+          <div id="resumeEmptyState" class="bg-white rounded-2xl border border-slate-200 p-12 text-center my-auto">
+            <div class="w-16 h-16 rounded-full bg-slate-100 text-slate-400 flex items-center justify-center text-2xl mb-4 mx-auto">
+              <i class="fa-solid fa-file-circle-check"></i>
+            </div>
+            <h3 class="text-lg font-bold text-slate-800 mb-1">ATS Scanner Ready</h3>
+            <p class="text-sm text-slate-500 max-w-md mx-auto mb-4">Upload your resume or click 'Sample Software Dev Resume' above to test the NLP ATS scoring engine.</p>
+          </div>
+
+          <div id="resumeLoadingState" class="hidden bg-white rounded-2xl border border-slate-200 p-12 text-center my-auto">
+            <div class="inline-block animate-spin rounded-full h-10 w-10 border-4 border-brand-500 border-t-transparent mb-4"></div>
+            <p class="text-sm font-medium text-slate-600">Extracting contact info, scanning keywords, and evaluating ATS score...</p>
+          </div>
+
+          <div id="resumeResults" class="hidden space-y-4">
+            <!-- Populated dynamically -->
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ========================================== -->
+    <!-- TAB 4: CAREER ASSESSMENT (HOLLAND RIASEC) -->
+    <!-- ========================================== -->
+    <section id="tab-assessment" class="tab-pane">
+      <div class="mb-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div>
+          <h1 class="text-2xl font-bold text-slate-900">Holland RIASEC Career Assessment Quiz</h1>
+          <p class="text-sm text-slate-500">Discover your vocational personality type across Realistic, Investigative, Artistic, Social, Enterprising, and Conventional traits.</p>
+        </div>
+      </div>
+
+      <div class="max-w-4xl mx-auto">
+        
+        <!-- Quiz Form Card -->
+        <div id="quizContainer" class="bg-white rounded-2xl border border-slate-200 p-8 shadow-sm">
+          <div class="flex items-center justify-between pb-4 border-b border-slate-100 mb-6">
+            <span class="text-xs font-bold uppercase tracking-wider text-brand-600">8-Question Assessment</span>
+            <span id="quizProgressText" class="text-xs text-slate-400">Complete all questions below</span>
+          </div>
+
+          <form id="assessmentForm" onsubmit="handleAssessmentSubmit(event)" class="space-y-8">
+            <div id="questionsContainer" class="space-y-6">
+              <!-- Rendered dynamically -->
+            </div>
+
+            <div class="pt-4 border-t border-slate-100 flex justify-end">
+              <button type="submit" class="py-3 px-8 bg-brand-600 hover:bg-brand-700 text-white rounded-xl font-semibold shadow-md shadow-brand-500/25 transition">
+                <span>Submit & View Personality Profile</span> <i class="fa-solid fa-arrow-right ml-1"></i>
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <!-- Quiz Results Card -->
+        <div id="quizResultsContainer" class="hidden bg-white rounded-2xl border border-slate-200 p-8 shadow-sm">
+          <!-- Populated dynamically -->
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ========================================== -->
+    <!-- TAB 5: CAREER EXPLORER -->
+    <!-- ========================================== -->
+    <section id="tab-explorer" class="tab-pane">
+      <div class="mb-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div>
+          <h1 class="text-2xl font-bold text-slate-900">Career Explorer & Knowledge Base</h1>
+          <p class="text-sm text-slate-500">Explore comprehensive pathways, salary benchmarks, required toolsets, and structured roadmaps.</p>
+        </div>
+        
+        <!-- Search & Filter -->
+        <div class="flex items-center gap-2">
+          <div class="relative">
+            <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
+            <input type="text" id="explorerSearch" onkeyup="filterExplorerCareers()" placeholder="Search career or skill..." class="text-xs bg-white border border-slate-200 rounded-xl pl-8 pr-3 py-2 text-slate-700 focus:outline-none focus:ring-2 focus:ring-brand-500 w-48 sm:w-64">
+          </div>
+          <select id="explorerCategoryFilter" onchange="filterExplorerCareers()" class="text-xs bg-white border border-slate-200 rounded-xl px-3 py-2 text-slate-700 focus:outline-none focus:ring-2 focus:ring-brand-500">
+            <option value="">All Categories</option>
+            <!-- Populated dynamically -->
+          </select>
+        </div>
+      </div>
+
+      <div id="explorerGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+        <!-- Rendered dynamically -->
+      </div>
+    </section>
+
+    <!-- ========================================== -->
+    <!-- TAB 6: MARKET INSIGHTS & JOB BOARD -->
+    <!-- ========================================== -->
+    <section id="tab-market" class="tab-pane">
+      <div class="mb-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div>
+          <h1 class="text-2xl font-bold text-slate-900">Job Market Insights & Live Opportunities</h1>
+          <p class="text-sm text-slate-500">Real-world tech compensation trends, demand velocity, and curated student job/internship listings.</p>
+        </div>
+      </div>
+
+      <!-- Market Stats Overview -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-5 mb-8">
+        
+        <!-- Fastest Growing Skills Card -->
+        <div class="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm">
+          <h3 class="text-sm font-bold text-slate-800 mb-3 flex items-center gap-2">
+            <i class="fa-solid fa-fire text-amber-500"></i> Top In-Demand Skills (2026)
+          </h3>
+          <div id="marketSkillsList" class="space-y-2.5">
+            <!-- Dynamic skills list -->
+          </div>
+        </div>
+
+        <!-- Work Style Breakdown -->
+        <div class="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm flex flex-col justify-between">
+          <div>
+            <h3 class="text-sm font-bold text-slate-800 mb-1 flex items-center gap-2">
+              <i class="fa-solid fa-building-laptop text-brand-600"></i> Work Mode Distribution
+            </h3>
+            <p class="text-xs text-slate-400 mb-4">Global tech industry workplace policy breakdown</p>
+            <div class="space-y-3">
+              <div>
+                <div class="flex justify-between text-xs font-semibold mb-1">
+                  <span>Hybrid Work</span> <span class="text-brand-600">45%</span>
+                </div>
+                <div class="w-full bg-slate-100 rounded-full h-2">
+                  <div class="bg-brand-600 h-2 rounded-full" style="width: 45%"></div>
+                </div>
+              </div>
+              <div>
+                <div class="flex justify-between text-xs font-semibold mb-1">
+                  <span>Fully Remote</span> <span class="text-emerald-600">38%</span>
+                </div>
+                <div class="w-full bg-slate-100 rounded-full h-2">
+                  <div class="bg-emerald-500 h-2 rounded-full" style="width: 38%"></div>
+                </div>
+              </div>
+              <div>
+                <div class="flex justify-between text-xs font-semibold mb-1">
+                  <span>On-site</span> <span class="text-slate-500">17%</span>
+                </div>
+                <div class="w-full bg-slate-100 rounded-full h-2">
+                  <div class="bg-slate-400 h-2 rounded-full" style="width: 17%"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="mt-4 pt-4 border-t border-slate-100 text-[11px] text-slate-500 flex items-center gap-1.5">
+            <i class="fa-solid fa-circle-info text-brand-500"></i>
+            <span>83% of tech roles now offer remote or hybrid flexibility.</span>
+          </div>
+        </div>
+
+        <!-- Salary Benchmarks Card -->
+        <div class="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm">
+          <h3 class="text-sm font-bold text-slate-800 mb-3 flex items-center gap-2">
+            <i class="fa-solid fa-sack-dollar text-emerald-600"></i> Entry-Level Tech Compensation
+          </h3>
+          <div id="salaryBenchmarksList" class="space-y-2.5">
+            <!-- Dynamic salaries -->
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Job & Internship Board -->
+      <div class="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between pb-4 border-b border-slate-100 mb-5 gap-3">
+          <div>
+            <h2 class="text-base font-bold text-slate-900">Curated Student & Graduate Job Opportunities</h2>
+            <p class="text-xs text-slate-500">Each listing automatically shows your profile match percentage.</p>
+          </div>
+          <button onclick="refreshJobMatches()" class="text-xs font-semibold text-brand-600 hover:text-brand-700 flex items-center gap-1 self-start sm:self-auto">
+            <i class="fa-solid fa-arrows-rotate"></i> Re-Calculate Match with My Profile
+          </button>
+        </div>
+
+        <div id="jobsList" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <!-- Populated dynamically -->
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================== -->
+    <!-- TAB 7: AI ADVISOR CHAT -->
+    <!-- ========================================== -->
+    <section id="tab-advisor" class="tab-pane">
+      <div class="mb-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div>
+          <h1 class="text-2xl font-bold text-slate-900">AI Career Advisor & Counselor</h1>
+          <p class="text-sm text-slate-500">Ask questions about interview preparation, career transitions, resume feedback, and tech learning paths.</p>
+        </div>
+      </div>
+
+      <div class="max-w-4xl mx-auto bg-white rounded-2xl border border-slate-200 shadow-sm flex flex-col h-[650px] overflow-hidden">
+        
+        <!-- Chat Header -->
+        <div class="p-4 border-b border-slate-100 bg-slate-50/50 flex items-center gap-3">
+          <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-brand-600 to-indigo-500 flex items-center justify-center text-white shadow-sm">
+            <i class="fa-solid fa-robot"></i>
+          </div>
+          <div>
+            <h3 class="text-sm font-bold text-slate-800">Career Advisor AI</h3>
+            <p class="text-[11px] text-emerald-600 flex items-center gap-1">
+              <span class="w-2 h-2 rounded-full bg-emerald-500 inline-block"></span> Active & Ready to Assist
+            </p>
+          </div>
+        </div>
+
+        <!-- Chat History Window -->
+        <div id="chatHistory" class="flex-1 p-6 overflow-y-auto space-y-4">
+          <!-- Initial Welcome Message -->
+          <div class="flex gap-3">
+            <div class="w-8 h-8 rounded-lg bg-brand-100 text-brand-700 flex items-center justify-center shrink-0 text-sm">
+              <i class="fa-solid fa-robot"></i>
+            </div>
+            <div class="chat-bubble-bot p-4 rounded-2xl text-xs sm:text-sm max-w-[85%] space-y-2">
+              <p class="font-semibold text-slate-800">Hello! I am your AI Career Counselor.</p>
+              <p>I can help you explore tech careers, prepare for coding interviews, review resume strategies, or plan how to bridge your skill gaps.</p>
+              <p class="text-slate-500 text-xs">Feel free to ask a question or tap one of the suggested prompts below!</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Suggested Prompt Chips -->
+        <div class="px-4 py-2 border-t border-slate-100 bg-slate-50 flex flex-wrap gap-1.5 text-xs">
+          <button onclick="sendQuickPrompt('How should I prepare for coding and DSA interviews?')" class="bg-white hover:bg-slate-100 text-slate-700 px-3 py-1 rounded-full border border-slate-200 transition">
+            💡 Coding Interview Prep
+          </button>
+          <button onclick="sendQuickPrompt('How do I optimize my resume to pass ATS screeners?')" class="bg-white hover:bg-slate-100 text-slate-700 px-3 py-1 rounded-full border border-slate-200 transition">
+            📄 Resume ATS Tips
+          </button>
+          <button onclick="sendQuickPrompt('How do I break into Machine Learning and AI in 2026?')" class="bg-white hover:bg-slate-100 text-slate-700 px-3 py-1 rounded-full border border-slate-200 transition">
+            🤖 Break into Machine Learning
+          </button>
+          <button onclick="sendQuickPrompt('What kind of projects make a GitHub portfolio stand out?')" class="bg-white hover:bg-slate-100 text-slate-700 px-3 py-1 rounded-full border border-slate-200 transition">
+            ⭐ Standout GitHub Projects
+          </button>
+          <button onclick="sendQuickPrompt('How do I negotiate salary as a fresher or graduate?')" class="bg-white hover:bg-slate-100 text-slate-700 px-3 py-1 rounded-full border border-slate-200 transition">
+            💰 Salary Negotiation
+          </button>
+        </div>
+
+        <!-- Message Input -->
+        <form onsubmit="handleChatSubmit(event)" class="p-3 border-t border-slate-200 bg-white flex gap-2">
+          <input type="text" id="chatInput" placeholder="Ask about careers, skill roadmaps, interview questions..." class="flex-1 bg-slate-100 border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
+          <button type="submit" class="bg-brand-600 hover:bg-brand-700 text-white px-5 py-2.5 rounded-xl font-semibold text-sm transition flex items-center gap-1.5 shadow-sm">
+            <span>Send</span> <i class="fa-solid fa-paper-plane text-xs"></i>
+          </button>
+        </form>
+
+      </div>
+    </section>
+
+  </main>
+
+  <!-- CAREER DEEP DIVE MODAL -->
+  <div id="careerModal" class="fixed inset-0 z-50 hidden bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="modal-content bg-white rounded-3xl max-w-3xl w-full max-h-[90vh] overflow-y-auto shadow-2xl border border-slate-200 p-6 sm:p-8">
+      <div id="modalContent">
+        <!-- Injected via JavaScript -->
+      </div>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer class="bg-white border-t border-slate-200 py-6 mt-12 text-center text-xs text-slate-500">
+    <div class="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-3">
+      <div class="flex items-center gap-2 font-medium text-slate-700">
+        <i class="fa-solid fa-compass text-brand-600"></i> AI-Powered Career Guidance System &copy; 2026
+      </div>
+      <p class="text-slate-400">Powered by Machine Learning, Natural Language Processing, and Multi-Factor Ranking.</p>
+    </div>
+  </footer>
+
+  <!-- App JavaScript -->
+  <script src="/static/js/app.js"></script>
+</body>
+</html>
+

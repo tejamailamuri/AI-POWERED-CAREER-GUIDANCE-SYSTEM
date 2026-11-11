@@ -1,0 +1,42 @@
+PRIYA SHARMA
+Email: priya.sharma@example.com | Phone: +91-98765-43210
+LinkedIn: linkedin.com/in/priyasharma-data | GitHub: github.com/priyasharma-ai
+Bangalore, India
+
+PROFESSIONAL SUMMARY
+Analytical and detail-oriented Data Scientist and Machine Learning enthusiast with a strong academic foundation in Statistics, Python, and Predictive Modeling. Experienced in building end-to-end data pipelines, developing machine learning classifiers, and visualizing insights in interactive Power BI and Tableau dashboards.
+
+CORE COMPETENCIES & TECHNICAL SKILLS
+- Programming: Python (Pandas, NumPy, Scikit-Learn, SciPy), SQL, R, Bash
+- Machine Learning & AI: Supervised & Unsupervised Learning, Regression, Random Forest, XGBoost, Neural Networks, PyTorch Basics, Natural Language Processing
+- Data Visualization & BI: Tableau, Power BI, Matplotlib, Seaborn, Excel (Pivot Tables, VLOOKUP)
+- Databases & Tools: PostgreSQL, MySQL, Snowflake, Git, Jupyter Notebook, Docker
+- Statistics: Hypothesis Testing, A/B Testing, Probability Distributions, Regression Analysis
+
+EXPERIENCE & INTERNSHIPS
+Data Science Intern | FinTech Analytics India (August 2024 - January 2025)
+- Developed machine learning customer churn prediction model using Python and XGBoost, achieving an ROC-AUC score of 0.89 and identifying ₹1.2M in at-risk annual recurring revenue.
+- Engineered automated data cleaning and transformation ETL pipelines using Pandas and SQL, reducing manual data preparation time by 35 hours per month.
+- Designed interactive executive KPI dashboards in Power BI tracking regional customer acquisition costs and retention rates.
+- Formulated and analyzed A/B testing experiments on checkout landing pages, yielding a statistically significant 6.4% lift in user conversion.
+
+ACADEMIC PROJECTS
+Customer Sentiment Analysis & Topic Modeling | Python, NLTK, Scikit-Learn, Streamlit
+- Scraped and analyzed 45,000+ customer reviews using Beautiful Soup and NLP preprocessing techniques.
+- Trained multi-class sentiment classifier using TF-IDF and Logistic Regression with 91% accuracy.
+- Deployed interactive Streamlit web dashboard showcasing live sentiment distribution and WordCloud visualizations.
+
+Automated Predictive Housing Valuation Engine | Python, Scikit-Learn, Flask
+- Built multi-variable regression model predicting real estate prices based on 22 housing attributes.
+- Implemented feature selection via Lasso regularization and cross-validation, reducing Root Mean Squared Error (RMSE) by 18%.
+- Packaged model into RESTful Flask API with input validation and Docker containerization.
+
+EDUCATION
+Bachelor of Technology in Computer Science & Data Analytics | National Institute of Technology
+- CGPA: 8.9 / 10.0 (Graduation: June 2025)
+- Honors: 1st Place at Inter-College Hackathon Data Track (2024), Dean's List for Academic Excellence
+
+CERTIFICATIONS
+- Google Data Analytics Professional Certificate
+- DeepLearning.AI Machine Learning Specialization (Andrew Ng)
+
